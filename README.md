@@ -4,7 +4,10 @@ Odds and ends to interface with Looking Glass
 ### Using `make_quilt`
 'Make Quilt' takes in a sequnce of rendered frames from the output of [btparker's fork of the Blender LKG addon](https://github.com/btparker/blenderLKG) (install by [downloading the looking_glass_tools.zip from the release](https://github.com/btparker/blenderLKG/releases/tag/v4.0-alpha) and select within Blender 2.92 Preferences->Add-ons->Install).
 
+I've added it to my bin path, as it is a "#!/usr/bin/env python", but one may invoke with "python make_quilt" as well. Requires python and ffmpeg to be installed and command line invocable.
+
 Help output:
+
 ```
 Create a Looking Glass Quilt file
 
@@ -29,7 +32,9 @@ optional arguments:
   --frames-per-second FRAMES_PER_SECOND, -fps FRAMES_PER_SECOND
                         Frames per second for video
 ```
+
 Example:
+
 ```sh
 make_quilt -fp "new-render/{:04d}.{:02d}.png" -o test/foo --video -ff 0 -fl 49
 ```
