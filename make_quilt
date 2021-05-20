@@ -51,12 +51,13 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Create a Looking Glass Quilt file')
     parser.add_argument('--file-pattern', '-fp', type=str, help='Target files pattern, such as "render/foo.{:04d}.{:02d}.png"', required=True)
     parser.add_argument('--output', '-o', type=str, help='Output filename and path of desired file', required=True)
-    parser.add_argument('--tiles_h', '-th', type=int, help='Number of tiles, horizontal', default=8)
-    parser.add_argument('--tiles_v', '-tv', type=int, help='Number of tiles, vertical', default=6)
+    parser.add_argument('--tiles-h', '-th', type=int, help='Number of tiles, horizontal', default=8)
+    parser.add_argument('--tiles-v', '-tv', type=int, help='Number of tiles, vertical', default=6)
     parser.add_argument('--video', action='store_true')
-    parser.add_argument('--tile_first', '-tf', type=int, help='Index of the first tile', default=0)
-    parser.add_argument('--frame_first', '-ff', type=int, help='Index of the first frame', default=1)
-    parser.add_argument('--frame_last', '-fl', type=int, help='Index of the last frame', default=1)
+    parser.add_argument('--tile-first', '-tf', type=int, help='Index of the first tile', default=0)
+    parser.add_argument('--frame-first', '-ff', type=int, help='Index of the first frame', default=1)
+    parser.add_argument('--frame-last', '-fl', type=int, help='Index of the last frame', default=1)
+    parser.add_argument('--frames-per-second', '-fps', type=int, help='Frames per second for video', default=24)
 
     args = parser.parse_args()
     return args
@@ -117,7 +118,7 @@ def main():
 
             for i in range(args.tiles_h):
                 tile_img_path = args.file_pattern.format(frame, tile_idx)
-    
+
                 tile_img = Image.open(tile_img_path)
                 outimg.paste(tile_img, (tile_left, tile_top))
 
@@ -129,7 +130,13 @@ def main():
         outimg.save("{}.{}.jpg".format(args.output, str(frame).zfill(4)))
 
     if args.video:
-        os.system("ffmpeg -r 24 -i {}.%04d.jpg -vcodec mpeg4 -y {}.mp4".format(args.output, args.output))
+        ffmpeg_cmd = "ffmpeg -r {} -i {}.%04d.jpg -c:v libx264 -crf 10 -pix_fmt yuv420p -y {}.mp4".format(
+            args.frames_per_second,
+            args.output,
+            args.output,
+        )
+        print("Executing '{}'".format(ffmpeg_cmd))
+        os.system(ffmpeg_cmd)
 
 if __name__ == "__main__":
     main()
